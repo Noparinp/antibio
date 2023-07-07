@@ -55,6 +55,11 @@ spc_org_drug_df = pd.DataFrame(spc_org_drug)
 # heatmap_data = filtered_data.pivot(index='organism', columns='drug', values='sum_value')
 ############################################################################################
 
+max_value = np.max(spc_org_drug['sum_value'])
+min_value = np.min(spc_org_drug['sum_value'])
+center = (max_value+min_value)/2
+
+
 for drug in druglist:
    
     filtered_data = spc_org_drug_df[spc_org_drug_df['drug'] == drug]
@@ -64,33 +69,20 @@ for drug in druglist:
 
 
     fig, ax = plt.subplots(figsize=(8, 10))  # Adjust the figure size as needed
-    sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax, linewidth=0.5, linecolor='black', square=True)
+    sns.set(font_scale=1.4)
+    sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax, linewidth=0.5, linecolor='black', square=True, center = center, vmax = max_value, vmin = min_value, cbar_kws={"shrink": 0.5})
 
     # Rotate the x-axis tick labels
     plt.xticks(rotation=45)  # Adjust the rotation angle as needed
-
+    
     # Set labels and title
-    plt.xlabel('organism')
-    plt.ylabel('spctype')
-    plt.title('Heatmap of the drug '+drug)
+    plt.xlabel('Specimen type')
+    plt.ylabel('Organism')
+    plt.title(f'Heatmap of the {drug} resistance level of each organism ')
 
     # Show the plot
+    plt.savefig(f'D:/AllResearch/R_learning/antibio_plot/drug/{drug}.png')
     plt.show()
-   
+    
+    # SAVE IMAGE 
 
-#################################### plot #################################
-
-# # Plot the heatmap
-# fig, ax = plt.subplots(figsize=(8, 10))  # Adjust the figure size as needed
-# sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax)
-
-# # Rotate the x-axis tick labels
-# plt.xticks(rotation=45)  # Adjust the rotation angle as needed
-
-# # Set labels and title
-# plt.xlabel('drug')
-# plt.ylabel('organism')
-# plt.title('Heatmap of the csf specimens')
-
-# # Show the plot
-# plt.show()
