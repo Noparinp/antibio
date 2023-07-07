@@ -3,6 +3,8 @@ import seaborn
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 os.chdir("E:/Download_E/")
@@ -47,20 +49,24 @@ example: nuber of resistance test of Streptococcus pneumoniae in blood to Ampici
 spc_org_drug= pd.read_csv("D:/AllResearch/R_learning/spc_org_drug_df_new.csv")
 spc_org_drug_df = pd.DataFrame(spc_org_drug)
 
-# plot circle with size according to positive resistance rate and color according to organism
-# plot triangle with size according negative resistance rate and color according to organism
-import matplotlib.pyplot as plt
-import seaborn as sns
+spc_org_drug_df['marker'] = 'circle'  # Initialize all markers as circles
+spc_org_drug_df.loc[spc_org_drug_df['resistance_rate'] < 0, 'marker'] = 'triangle'  # Set marker as triangle for negative resistance rate
 
-spc_org_drug_df['resistance_percent'] = spc_org_drug_df['resistance_rate']*100
+
 
 plt.figure(figsize=(10, 10))
-sns.scatterplot(x='test_count', y='resistance_rate', hue='organism', size='resistance_percent', data=spc_org_drug_df)
+
+sns.scatterplot(x='test_count', y='resistance_rate', hue='organism', style='marker', size='resistance_rate',
+                markers={'circle': 'o', 'triangle': '^'}, alpha = 0.5,sizes=(100, 500), data=spc_org_drug_df)
 # move legend outside the plot
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 plt.grid()
 plt.gca().set_axisbelow(True)
 plt.show()
+
+
+
+
 
 
 
