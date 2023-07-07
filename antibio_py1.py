@@ -3,7 +3,7 @@ import seaborn
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-
+import seaborn as sns
 
 os.chdir("E:/Download_E/")
 data = pd.read_excel("microbiology_data.xlsx")
@@ -43,29 +43,54 @@ u_organism = organisms.unique()
 ################################################################################################
 spc_org_drug= pd.read_csv("D:/AllResearch/R_learning/spc_org_drug_df2.csv")
 spc_org_drug_df = pd.DataFrame(spc_org_drug)
-#################################################################################
+##################################### use specimen type as a main topic############################################
 
-#plot heatmap of sum of each spctype, organism, and drug
-import seaborn as sns
-
-# Filter the data based on column 'a' == 'yes'
-filtered_data = spc_org_drug_df[spc_org_drug_df['spctype'] == 'csf']
-
-# Pivot the filtered data to create a matrix for the heatmap
-heatmap_data = filtered_data.pivot(index='organism', columns='drug', values='sum_value')
+# #plot heatmap of sum of each spctype, organism, and drug
 
 
-# Plot the heatmap
-fig, ax = plt.subplots(figsize=(8, 10))  # Adjust the figure size as needed
-sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax)
+# # Filter the data based on column 'a' == 'yes'
+# filtered_data = spc_org_drug_df[spc_org_drug_df['spctype'] == 'csf']
 
-# Rotate the x-axis tick labels
-plt.xticks(rotation=45)  # Adjust the rotation angle as needed
+# # Pivot the filtered data to create a matrix for the heatmap
+# heatmap_data = filtered_data.pivot(index='organism', columns='drug', values='sum_value')
+############################################################################################
 
-# Set labels and title
-plt.xlabel('drug')
-plt.ylabel('organism')
-plt.title('Heatmap of the csf specimens')
+for drug in druglist:
+   
+    filtered_data = spc_org_drug_df[spc_org_drug_df['drug'] == drug]
 
-# Show the plot
-plt.show()
+    # Pivot the filtered data to create a matrix for the heatmap
+    heatmap_data = filtered_data.pivot(index='organism', columns='spctype', values='sum_value')
+
+
+    fig, ax = plt.subplots(figsize=(8, 10))  # Adjust the figure size as needed
+    sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax, linewidth=0.5, linecolor='black', square=True)
+
+    # Rotate the x-axis tick labels
+    plt.xticks(rotation=45)  # Adjust the rotation angle as needed
+
+    # Set labels and title
+    plt.xlabel('organism')
+    plt.ylabel('spctype')
+    plt.title('Heatmap of the drug '+drug)
+
+    # Show the plot
+    plt.show()
+   
+
+#################################### plot #################################
+
+# # Plot the heatmap
+# fig, ax = plt.subplots(figsize=(8, 10))  # Adjust the figure size as needed
+# sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax)
+
+# # Rotate the x-axis tick labels
+# plt.xticks(rotation=45)  # Adjust the rotation angle as needed
+
+# # Set labels and title
+# plt.xlabel('drug')
+# plt.ylabel('organism')
+# plt.title('Heatmap of the csf specimens')
+
+# # Show the plot
+# plt.show()
