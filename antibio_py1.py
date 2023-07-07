@@ -11,64 +11,61 @@ data_df = pd.DataFrame(data)
 
 organisms = data['organism']
 spctypes = data['spctype']
-drugs_df = data_df.iloc[:, 4:]
-
-
+data_df = data_df.drop(columns=['spcdate','hn'])
+print(data_df.head())
 ########################Prepare data #######################################################
-# create dictionary for value s r or np.nan
-drugs_dict = {'S': -1, 'R': 1, np.nan: 0}
-# replace value in drugs_df
-drugs_df = drugs_df.replace(drugs_dict)
-# sum of each column in drug dataframe
-drugs_sum = drugs_df.sum(axis=0) # type is series
-#add drug  sum row at the end of data_df
-data_df.loc['drug_sum'] = drugs_sum
-# print(data_df.tail())
-
-
-#plot the sum of each column with label value at each bar
-# plt.figure(figsize=(10, 5))
-# plt.bar(drugs_sum.index, drugs_sum.values)
-# plt.xticks(rotation=90)
-# plt.ylabel('Number of Isolates')
-# plt.title('Number of Isolates Resistant to Each Antibiotic')
-# plt.show()
-
-########################################## data of each organism and specimen type##############################################
-# iterate thright the spctypes and organism and sum the value from drug_df
-# and create a new dataframe with the sum of each spctype and organism
-# spc_org_df = pd.DataFrame()
-# for spc in spctypes.unique():
-#     for org in organisms.unique():
-#         spc_org_df.loc[spc, org] = drugs_df[(spctypes == spc) & (organisms == org)].sum().sum()
-    
-
-# print(spc_org_df.head())
-# spc_org_df.to_csv('D:/AllResearch/R_learning/spc_org_df.csv')
-
-#########################################################################################
-# iterate thright the spctypes and organism and sum the value from drug_df 
-# and create a new dataframe with the sum of each spctype and organism and drug
-spc_org_drug_df = pd.DataFrame()
-for spc in spctypes.unique():
-    for org in organisms.unique():
-        for drug in drugs_df.columns:
-            spc_org_drug_df.loc[spc, org, drug] = drugs_df[(spctypes == spc) & (organisms == org)][drug].sum()
-
-print(spc_org_drug_df.head())
-spc_org_drug_df.to_csv('D:/AllResearch/R_learning/spc_org_drug_df.csv')
-
-
-    
+# create dictionary for value s r or blank cell
+drugs_dict = {'S': -1, 'R': 1, '': 0}
+# replace value in data_df
+data_df= data_df.replace(drugs_dict)
+# drop specdate column
 
 
 
+druglist = data_df.columns[3:]
+print(druglist)
+#convert to list
+druglist = druglist.tolist()
+
+u_spctype = spctypes.unique()
+u_organism = organisms.unique()
+#################################################################################################
+# Create a data frame for the sum of each spctype, organism, and drug
+
+# spc_org_drug_df = pd.DataFrame(columns=['spctype', 'organism', 'drug', 'sum_value'])
+
+# for spc in u_spctype:
+#     for org in u_organism:
+#         for drug in druglist:
+#             sum_value = data_df.loc[(spctypes == spc) & (organisms == org), drug].sum()
+#             spc_org_drug_df = spc_org_drug_df.append({'spctype': spc, 'organism': org, 'drug': drug, 'sum_value': sum_value}, ignore_index=True)
+
+################################################################################################
+spc_org_drug= pd.read_csv("D:/AllResearch/R_learning/spc_org_drug_df2.csv")
+spc_org_drug_df = pd.DataFrame(spc_org_drug)
+#################################################################################
+
+#plot heatmap of sum of each spctype, organism, and drug
+import seaborn as sns
+
+# Filter the data based on column 'a' == 'yes'
+filtered_data = spc_org_drug_df[spc_org_drug_df['spctype'] == 'csf']
+
+# Pivot the filtered data to create a matrix for the heatmap
+heatmap_data = filtered_data.pivot(index='organism', columns='drug', values='sum_value')
 
 
+# Plot the heatmap
+fig, ax = plt.subplots(figsize=(8, 10))  # Adjust the figure size as needed
+sns.heatmap(heatmap_data, annot=False, cmap='RdBu', ax=ax)
 
+# Rotate the x-axis tick labels
+plt.xticks(rotation=45)  # Adjust the rotation angle as needed
 
+# Set labels and title
+plt.xlabel('drug')
+plt.ylabel('organism')
+plt.title('Heatmap of the csf specimens')
 
-
-       
-
-
+# Show the plot
+plt.show()
