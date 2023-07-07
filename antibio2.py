@@ -56,13 +56,14 @@ spc_org_drug_df.loc[spc_org_drug_df['resistance_rate'] < 0, 'marker'] = 'triangl
 
 plt.figure(figsize=(10, 10))
 
-sns.scatterplot(x='test_count', y='resistance_rate', hue='organism', style='marker', size='resistance_rate',
+sns.scatterplot(x='drug', y='resistance_rate', hue='Organism', style='marker', size='resistance_rate',
                 markers={'circle': 'o', 'triangle': '^'}, alpha = 0.5,sizes=(100, 500), data=spc_org_drug_df)
 # move legend outside the plot
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 plt.grid()
 plt.gca().set_axisbelow(True)
 plt.show()
+
 
 
 
