@@ -56,12 +56,36 @@ spc_org_drug_df.loc[spc_org_drug_df['resistance_rate'] < 0, 'marker'] = 'triangl
 
 plt.figure(figsize=(10, 10))
 
-sns.scatterplot(x='drug', y='resistance_rate', hue='Organism', style='marker', size='resistance_rate',
+sns.scatterplot(x='drug', y='organism', hue='resistance_rate', style='marker', size='resistance_rate',
                 markers={'circle': 'o', 'triangle': '^'}, alpha = 0.5,sizes=(100, 500), data=spc_org_drug_df)
 # move legend outside the plot
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 plt.grid()
 plt.gca().set_axisbelow(True)
+
+
+# caalculate the average resistance rate of each drug
+avg_resistance_rate = spc_org_drug_df.groupby('drug')['resistance_rate'].mean()
+avg_resistance_rate = avg_resistance_rate.reset_index()
+avg_resistance_rate = avg_resistance_rate.sort_values(by='resistance_rate', ascending=False)
+print(avg_resistance_rate)
+
+#plot the scatter sort by the lowest resistance rate to the highest type of drug 
+plt.figure(figsize=(10, 10))
+sns.scatterplot(x='drug', y='organism', hue='resistance_rate', style='marker', size='resistance_rate',
+                markers={'circle': 'o', 'triangle': '^'}, alpha = 0.5,sizes=(100, 500), data=spc_org_drug_df)
+# move legend outside the plot
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+plt.grid()
+
+plt.gca().set_axisbelow(True)
+# add the average resistance rate of each drug to the plot under the x-axis of each drug name
+for i in range(len(avg_resistance_rate)):
+
+    plt.text(i, 19, round(avg_resistance_rate['resistance_rate'][i], 2), ha='center', va='top', fontsize=10)
+
+
+
 plt.show()
 
 
